@@ -36,9 +36,7 @@ class Employee(Model):
     def add_entry(cls, name, task, time, notes=''):
         """Add new entry"""
         Employee.create(name=name, task=task, time=time, notes=notes)
-        print("\nSaved successfully!")
-        return Employee.get(name == name, task == task,
-                            time == time, notes == notes)
+        return True
 
     @classmethod
     def edit_entry(cls, entry):

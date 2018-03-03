@@ -107,7 +107,7 @@ class EmployeeTest(unittest.TestCase):
             time='40',
             notes='Learning Django basics'
         )
-        self.assertIsInstance(new_entry, Employee)
+        self.assertTrue(new_entry, True)
         new_entry = Employee.get(
             Employee.name == 'Adrian',
             Employee.task == 'Learning Django',
