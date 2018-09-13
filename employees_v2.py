@@ -18,6 +18,9 @@ class Employee(Model):
         self.name = utils_v2.get_name(self.name)
         self.save()
 
+    class Meta:
+        database = db
+
 
 class Task(Model):
     """Model for an employee entry. Stores in database info about an employee
@@ -38,7 +41,7 @@ class Task(Model):
         print(self.employee)
         print("="*len(self.employee.name))
         print("\nDate: {}".format(self.date.strftime('%d/%m/%Y')))
-        print("Task: {}".format(self.task))
+        print("Task: {}".format(self.title))
         print("Time spent: {} minutes".format(self.time))
         if self.notes:
             print("Notes: {}\n".format(self.notes))
@@ -51,3 +54,4 @@ class Task(Model):
         self.date = utils_v2.get_date(self.date)
         self.time = utils_v2.get_time(self.time)
         self.notes = utils_v2.get_notes(self.notes)
+        self.save()

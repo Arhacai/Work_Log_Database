@@ -1,14 +1,13 @@
 from collections import OrderedDict
 
 import utils_v2
+from employees_search_v2 import TaskSearch, EmployeeSearch
 from employees_v2 import Employee, Task
-import employees_search
-from employees_search import EmployeeSearch
 
 import utils
 
 
-class WorkLog():
+class WorkLog:
     """WorkLog is a terminal application for logging what work someone did on a
     certain day. It holds a list of tasks, let the user to add, edit or delete
     any of them aswell several ways to search through the tasks. It stores this
@@ -62,11 +61,7 @@ class WorkLog():
 
             choice = input("\n> ").lower().strip()
             if choice == 'a':
-                name = utils.get_name()
-                task = utils.get_task()
-                time = utils.get_time()
-                notes = utils.get_notes()
-                Employee.add_entry(name, task, time, notes)
+                self.add_task()
             elif choice == 'b':
                 self.search_menu()
         return True
@@ -75,10 +70,10 @@ class WorkLog():
         """Search in existing entries"""
         search_menu = OrderedDict([
             ('a', EmployeeSearch.search_name),
-            ('b', EmployeeSearch.search_date),
-            ('c', EmployeeSearch.search_by_range),
-            ('d', EmployeeSearch.search_time),
-            ('e', EmployeeSearch.search_term),
+            ('b', TaskSearch.search_date),
+            ('c', TaskSearch.search_by_range),
+            ('d', TaskSearch.search_time),
+            ('e', TaskSearch.search_term),
         ])
 
         choice = None
@@ -92,18 +87,15 @@ class WorkLog():
 
             choice = input("\n> ").lower().strip()
             if choice == 'a':
-                EmployeeSearch.search_name(employees_search.get_name(
-                    employees_search.get_name_list()))
+                EmployeeSearch().search_name()
             if choice == 'b':
-                EmployeeSearch.search_date(employees_search.get_date())
+                TaskSearch.search_date()
             if choice == 'c':
-                EmployeeSearch.search_by_range(
-                    employees_search.get_start_date(),
-                    employees_search.get_end_date())
+                TaskSearch.search_by_range()
             if choice == 'd':
-                EmployeeSearch.search_time(employees_search.get_time())
+                TaskSearch.search_time()
             if choice == 'e':
-                EmployeeSearch.search_term(employees_search.get_term())
+                TaskSearch.search_term()
         return True
 
 
