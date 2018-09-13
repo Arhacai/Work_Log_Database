@@ -30,7 +30,7 @@ def get_title(initial=None):
     if not initial:
         clear_screen()
     while True:
-        title = input("Title of the task: ")
+        title = input("Title of the task: ").strip()
         if title != '':
             return title
         if initial:
@@ -43,6 +43,7 @@ def get_date(initial=None):
     Gets a valid date from user. If no date provided, it returns
     the initial date or None.
     """
+    date_list = []
     if not initial:
         clear_screen()
         tasks = Task.select().order_by(Task.date).distinct()
@@ -56,12 +57,10 @@ def get_date(initial=None):
         date = input("Please use DD/MM/YYYY: ")
         if date == '' and initial:
             return initial
-        try:
+        if date in date_list:
             date = datetime.datetime.strptime(date, '%d/%m/%Y')
-        except ValueError:
-            print("Sorry, you must enter a valid date.\n")
-        else:
             return date.date()
+        print("Sorry, you must enter a valid date.\n")
 
 
 def get_date_range():

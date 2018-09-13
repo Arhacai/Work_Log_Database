@@ -40,11 +40,11 @@ class Task(Model):
         utils.clear_screen()
         print(self.employee)
         print("="*len(self.employee.name))
-        print("\nDate: {}".format(self.date.strftime('%d/%m/%Y')))
+        print("Date: {}".format(self.date.strftime('%d/%m/%Y')))
         print("Task: {}".format(self.title))
         print("Time spent: {} minutes".format(self.time))
         if self.notes:
-            print("Notes: {}\n".format(self.notes))
+            print("Notes: {}".format(self.notes))
         print()
 
     def edit(self):

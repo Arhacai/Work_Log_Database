@@ -5,6 +5,7 @@ from employees_search_v2 import TaskSearch, EmployeeSearch
 from employees_v2 import Employee, Task
 
 import utils
+from menu import TaskMenu
 
 
 class WorkLog:
@@ -41,11 +42,11 @@ class WorkLog:
         """Edit entry"""
         task.edit()
 
-    def delete_task(self, task):
+    def delete_task(self, index, tasks):
         """Delete a task for the user selected."""
         answer = input("Do you really want to delete this task? [y/N]: ")
         if answer.lower() == 'y':
-            task.delete_instance()
+            tasks[index].delete_instance()
 
     def main_menu(self):
         """Show the main menu"""
@@ -87,15 +88,20 @@ class WorkLog:
 
             choice = input("\n> ").lower().strip()
             if choice == 'a':
-                EmployeeSearch().search_name()
+                tasks = EmployeeSearch().search_name()
+                TaskMenu(self, 0, tasks).run()
             if choice == 'b':
-                TaskSearch.search_date()
+                tasks = TaskSearch.search_date()
+                TaskMenu(self, 0, tasks).run()
             if choice == 'c':
-                TaskSearch.search_by_range()
+                tasks = TaskSearch.search_by_range()
+                TaskMenu(self, 0, tasks).run()
             if choice == 'd':
-                TaskSearch.search_time()
+                tasks = TaskSearch.search_time()
+                TaskMenu(self, 0, tasks).run()
             if choice == 'e':
-                TaskSearch.search_term()
+                tasks = TaskSearch.search_term()
+                TaskMenu(self, 0, tasks).run()
         return True
 
 
