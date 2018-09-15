@@ -1,6 +1,6 @@
-import utils_v2 as utils
-from employees_search_v2 import TaskSearch, EmployeeSearch
-from employees_v2 import Task
+import utils
+from search import TaskSearch
+from models import Task
 
 
 class MenuOption:
@@ -27,6 +27,10 @@ class MenuOption:
     def __str__(self):
         """Returns a basic display of the option. Example: a) First Option"""
         return "{}) {}".format(self.key, self.name)
+
+
+class QuitOption(MenuOption):
+    pass
 
 
 class Menu:
@@ -82,7 +86,7 @@ class Menu:
         while True:
             self.print_menu()
             result = self.get_function(self.get_option())
-            if result == 'quit':
+            if isinstance(result, QuitOption):
                 break
             self.side_run(result)
 
@@ -98,7 +102,7 @@ class Menu:
         Extra method provided to quit the actual menu. It should be included
         as the last option of the menu.
         """
-        return 'quit'
+        return self.options[-1]
 
 
 class MainMenu(Menu):
@@ -115,8 +119,9 @@ class MainMenu(Menu):
         self.log = log
         self.options = [
             MenuOption('a', 'Add new entry', log, 'add_task'),
-            MenuOption('b', 'Search in existing entries', SearchMenu(log), 'run'),
-            MenuOption('c', 'Quit program', self, 'quit'),
+            MenuOption(
+                'b', 'Search in existing entries', SearchMenu(log), 'run'),
+            QuitOption('c', 'Quit program', self, 'quit'),
         ]
 
     def print_title(self):
@@ -138,12 +143,12 @@ class SearchMenu(Menu, TaskSearch):
         """
         self.log = log
         self.options = [
-            MenuOption('a', 'Employee Name', TaskSearch, 'search_name'),
-            MenuOption('b', 'Date of Task', TaskSearch, 'search_date'),
-            MenuOption('c', 'Range of Dates', TaskSearch, 'search_by_range'),
-            MenuOption('d', 'Time Spent', TaskSearch, 'search_time'),
-            MenuOption('e', 'Search Term', TaskSearch, 'search_exact'),
-            MenuOption('f', 'Return to menu', self, 'quit'),
+            MenuOption('a', 'Employee Name', self, 'search_by_name'),
+            MenuOption('b', 'Date of Task', self, 'search_by_date'),
+            MenuOption('c', 'Range of Dates', self, 'search_by_range'),
+            MenuOption('d', 'Time Spent', self, 'search_by_time'),
+            MenuOption('e', 'Search Term', self, 'search_by_term'),
+            QuitOption('f', 'Return to menu', self, 'quit'),
         ]
 
     def print_title(self):
@@ -175,7 +180,7 @@ class TaskMenu(Menu):
         self.log = log
         self.index = index
         if tasks is None:
-            self.tasks = Task.select().order_by(Task.date)
+            self.tasks = [entry for entry in Task.select().order_by(Task.date)]
         else:
             self.tasks = tasks
         self.options = [
@@ -183,7 +188,7 @@ class TaskMenu(Menu):
             MenuOption('n', '[N]ext', self, 'next_task'),
             MenuOption('e', '[E]dit', log, 'edit_task', index, self.tasks),
             MenuOption('d', '[D]elete', log, 'delete_task', index, self.tasks),
-            MenuOption('r', '[R]eturn', self, 'quit')
+            QuitOption('r', '[R]eturn', self, 'quit')
         ]
         self.options = self.get_options(index, len(self.tasks))
 

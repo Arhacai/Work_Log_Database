@@ -1,7 +1,7 @@
 import datetime
 import employees_search
 import unittest
-import utils
+import utils_old
 import work_log
 
 from employees import Employee
@@ -21,63 +21,63 @@ class UtilsTest(unittest.TestCase):
         )
 
     def test_get_name(self):
-        utils.input = lambda _: 'Adrian'
-        name = utils.get_name()
+        utils_old.input = lambda _: 'Adrian'
+        name = utils_old.get_name()
         self.assertEqual(name, 'Adrian')
 
     def test_get_task(self):
-        utils.input = lambda _: 'Python Testing'
-        task = utils.get_task()
+        utils_old.input = lambda _: 'Python Testing'
+        task = utils_old.get_task()
         self.assertEqual(task, 'Python Testing')
 
     def test_get_time(self):
-        utils.input = lambda _: 30
-        time = utils.get_time()
+        utils_old.input = lambda _: 30
+        time = utils_old.get_time()
         self.assertEqual(time, 30)
 
     def test_get_notes(self):
-        utils.input = lambda _: 'Testing some methods'
-        notes = utils.get_notes()
+        utils_old.input = lambda _: 'Testing some methods'
+        notes = utils_old.get_notes()
         self.assertEqual(notes, 'Testing some methods')
 
     def test_change_date(self):
-        utils.input = lambda _: '25/02/2018'
-        date = utils.change_date(self.entry).strftime('%d/%m/%Y')
+        utils_old.input = lambda _: '25/02/2018'
+        date = utils_old.change_date(self.entry).strftime('%d/%m/%Y')
         self.assertEqual(date, '25/02/2018')
 
     def test_change_date_no_input(self):
-        utils.input = lambda _: ''
-        date = utils.change_date(self.entry)
+        utils_old.input = lambda _: ''
+        date = utils_old.change_date(self.entry)
         self.assertEqual(date, self.entry.date)
 
     def test_change_task(self):
-        utils.input = lambda _: 'New Task'
-        task = utils.change_task(self.entry)
+        utils_old.input = lambda _: 'New Task'
+        task = utils_old.change_task(self.entry)
         self.assertEqual(task, 'New Task')
 
     def test_change_task_no_input(self):
-        utils.input = lambda _: ''
-        task = utils.change_task(self.entry)
+        utils_old.input = lambda _: ''
+        task = utils_old.change_task(self.entry)
         self.assertEqual(task, self.entry.task)
 
     def test_change_time(self):
-        utils.input = lambda _: 30
-        time = utils.change_time(self.entry)
+        utils_old.input = lambda _: 30
+        time = utils_old.change_time(self.entry)
         self.assertEqual(time, 30)
 
     def test_change_time_no_input(self):
-        utils.input = lambda _: ''
-        time = utils.change_time(self.entry)
+        utils_old.input = lambda _: ''
+        time = utils_old.change_time(self.entry)
         self.assertEqual(time, self.entry.time)
 
     def test_change_notes(self):
-        utils.input = lambda _: 'Testing some methods'
-        notes = utils.change_notes(self.entry)
+        utils_old.input = lambda _: 'Testing some methods'
+        notes = utils_old.change_notes(self.entry)
         self.assertEqual(notes, 'Testing some methods')
 
     def test_change_notes_no_input(self):
-        utils.input = lambda _: ''
-        notes = utils.change_notes(self.entry)
+        utils_old.input = lambda _: ''
+        notes = utils_old.change_notes(self.entry)
         self.assertEqual(notes, self.entry.notes)
 
     def tearDown(self):
@@ -238,12 +238,12 @@ class WorkLogTest(unittest.TestCase):
     def test_main_menu(self):
         work_log.input = lambda _: 'c'
         self.assertEqual(WorkLog().main_menu(), True)
-        utils.clear_screen()
+        utils_old.clear_screen()
 
     def test_search_menu(self):
         work_log.input = lambda _: 'f'
         self.assertEqual(WorkLog().search_menu(), True)
-        utils.clear_screen()
+        utils_old.clear_screen()
 
 
 if __name__ == '__main__':
