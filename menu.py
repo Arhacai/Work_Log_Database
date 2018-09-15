@@ -1,6 +1,6 @@
 import utils
 from search import TaskSearch
-from models import Task
+from models import Task, MenuOptionModel
 
 
 class MenuOption:
@@ -65,14 +65,14 @@ class Menu:
                     return option
             print("Sorry, you must choose a valid option")
 
-    def get_function(self, option):
+    def get_function(self, option, *args):
         """
         Returns the result of the option chosen, executed with the proper
         params if provided and needed for the execution.
         """
-        return getattr(option.obj, option.func, False)(*option.params)
+        return option.get_func(*args)
 
-    def run(self):
+    def run(self, *args):
         """
         Runs de menu. Display all info on screen, gets the user's choice
         and execute the option. It keeps looping until quit method is called.
@@ -81,8 +81,8 @@ class Menu:
         """
         while True:
             self.print_menu()
-            result = self.get_function(self.get_option())
-            if isinstance(result, MenuOption):
+            result = self.get_function(self.get_option())(*args)
+            if isinstance(result, MenuOptionModel):
                 break
             self.side_run(result)
 
@@ -93,12 +93,13 @@ class Menu:
         """
         pass
 
-    def quit(self):
+    @staticmethod
+    def quit(*args):
         """
         Extra method provided to quit the actual menu. It should be included
         as the last option of the menu.
         """
-        return self.options[-1]
+        return MenuOptionModel()
 
 
 class MainMenu(Menu):
@@ -107,17 +108,36 @@ class MainMenu(Menu):
     entry, to search in existing entries or to quit program.
     """
 
-    def __init__(self, log):
+    def __init__(self):
         """
         Initializes the menu with a WorkLog object. It also creates three
         menu options to show and to operate with.
         """
-        self.log = log
         self.options = [
-            MenuOption('a', 'Add new entry', log, 'add_task'),
-            MenuOption(
-                'b', 'Search in existing entries', SearchMenu(log), 'run'),
-            MenuOption('c', 'Quit program', self, 'quit'),
+            MenuOptionModel.get_or_create(
+                key='a',
+                name='Add new entry',
+                menu='MainMenu',
+                module='work_log',
+                obj='WorkLog',
+                func='add_task'
+            )[0],
+            MenuOptionModel.get_or_create(
+                key='b',
+                name='Search in existing entries',
+                menu='MainMenu',
+                module='menu',
+                obj='SearchMenu',
+                func='run'
+            )[0],
+            MenuOptionModel.get_or_create(
+                key='c',
+                name='Quit program',
+                menu='MainMenu',
+                module='menu',
+                obj='MainMenu',
+                func='quit'
+            )[0]
         ]
 
     def print_title(self):
@@ -132,19 +152,60 @@ class SearchMenu(Menu, TaskSearch):
     entries using several methods provided by the TaskSearch class.
     """
 
-    def __init__(self, log):
+    def __init__(self):
         """
         Initializes the menu with a WorkLog object. It also creates six
         menu options to show and to operate with.
         """
-        self.log = log
         self.options = [
-            MenuOption('a', 'Employee Name', self, 'search_by_name'),
-            MenuOption('b', 'Date of Task', self, 'search_by_date'),
-            MenuOption('c', 'Range of Dates', self, 'search_by_range'),
-            MenuOption('d', 'Time Spent', self, 'search_by_time'),
-            MenuOption('e', 'Search Term', self, 'search_by_term'),
-            MenuOption('f', 'Return to menu', self, 'quit'),
+            MenuOptionModel.get_or_create(
+                key='a',
+                name='Employee Name',
+                menu='SearchMenu',
+                module='menu',
+                obj='SearchMenu',
+                func='search_by_name'
+            )[0],
+            MenuOptionModel.get_or_create(
+                key='b',
+                name='Date of Task',
+                menu='SearchMenu',
+                module='menu',
+                obj='SearchMenu',
+                func='search_by_date'
+            )[0],
+            MenuOptionModel.get_or_create(
+                key='c',
+                name='Range of Dates',
+                menu='SearchMenu',
+                module='menu',
+                obj='SearchMenu',
+                func='search_by_range'
+            )[0],
+            MenuOptionModel.get_or_create(
+                key='d',
+                name='Time Spent',
+                menu='SearchMenu',
+                module='menu',
+                obj='SearchMenu',
+                func='search_by_time'
+            )[0],
+            MenuOptionModel.get_or_create(
+                key='e',
+                name='Search Term',
+                menu='SearchMenu',
+                module='menu',
+                obj='SearchMenu',
+                func='search_by_term'
+            )[0],
+            MenuOptionModel.get_or_create(
+                key='f',
+                name='Return to menu',
+                menu='SearchMenu',
+                module='menu',
+                obj='SearchMenu',
+                func='quit'
+            )[0]
         ]
 
     def print_title(self):
@@ -154,7 +215,7 @@ class SearchMenu(Menu, TaskSearch):
     def side_run(self, result):
         """After the option chosen returns a list of tasks, they must be shown
         creating a TaskMenu object to display them."""
-        TaskMenu(self.log, 0, result).run()
+        TaskMenu(0, result).run()
 
 
 class TaskMenu(Menu):
@@ -164,7 +225,7 @@ class TaskMenu(Menu):
     tasks back and forth.
     """
 
-    def __init__(self, log, index=0, tasks=None):
+    def __init__(self, index=0, tasks=None):
         """
         Initializes the menu with a WorkLog object. By default, index is 0
         so the first task in the list is shown. If no tasks provided, this
@@ -173,18 +234,52 @@ class TaskMenu(Menu):
         depending on the index of the task shown, so options are changed
         on __init__ in each case.
         """
-        self.log = log
         self.index = index
         if tasks is None:
             self.tasks = [entry for entry in Task.select().order_by(Task.date)]
         else:
             self.tasks = tasks
         self.options = [
-            MenuOption('p', '[P]revious', self, 'previous_task'),
-            MenuOption('n', '[N]ext', self, 'next_task'),
-            MenuOption('e', '[E]dit', log, 'edit_task', index, self.tasks),
-            MenuOption('d', '[D]elete', log, 'delete_task', index, self.tasks),
-            MenuOption('r', '[R]eturn', self, 'quit')
+            MenuOptionModel.get_or_create(
+                key='p',
+                name='[P]revious',
+                menu='TaskMenu',
+                module='menu',
+                obj='TaskMenu',
+                func='previous_task'
+            )[0],
+            MenuOptionModel.get_or_create(
+                key='n',
+                name='[N]ext',
+                menu='TaskMenu',
+                module='menu',
+                obj='TaskMenu',
+                func='next_task'
+            )[0],
+            MenuOptionModel.get_or_create(
+                key='e',
+                name='[E]dit',
+                menu='TaskMenu',
+                module='work_log',
+                obj='WorkLog',
+                func='edit_task'
+            )[0],
+            MenuOptionModel.get_or_create(
+                key='d',
+                name='[D]elete',
+                menu='TaskMenu',
+                module='work_log',
+                obj='WorkLog',
+                func='delete_task'
+            )[0],
+            MenuOptionModel.get_or_create(
+                key='r',
+                name='[R]eturn',
+                menu='TaskMenu',
+                module='menu',
+                obj='TaskMenu',
+                func='quit'
+            )[0],
         ]
         self.options = self.get_options(index, len(self.tasks))
 
@@ -217,18 +312,32 @@ class TaskMenu(Menu):
         """Prints menu options in a different way than the base menu class"""
         print(', '.join([option.name for option in self.options]))
 
+    def run(self, *args):
+        """
+        Runs de menu. Display all info on screen, gets the user's choice
+        and execute the option. It keeps looping until quit method is called.
+        If a menu needs to do something with the result of the execuction of
+        the option, it can be done overriding the side_run method.
+        """
+        while True:
+            self.print_menu()
+            result = self.get_function(self.get_option(), self.index, self.tasks)(*args)
+            if isinstance(result, MenuOptionModel):
+                break
+            self.side_run(result)
+
     def side_run(self, result):
         """
         Upon completion of option chosen, index is updated to show the proper
         task on next iteration of the menu.
         """
         self.index = result
-        self.__init__(self.log, self.index, self.tasks)
+        self.__init__(self.index, self.tasks)
 
-    def previous_task(self):
+    def previous_task(self, *args):
         """Decreases index by one to show previous task"""
         return self.index - 1
 
-    def next_task(self):
+    def next_task(self, *args):
         """Increases index by one to show next task"""
         return self.index + 1

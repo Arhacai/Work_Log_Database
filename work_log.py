@@ -1,6 +1,6 @@
+import models
 import utils
 from menu import MainMenu
-from models import Employee, Task
 
 
 class WorkLog:
@@ -12,19 +12,12 @@ class WorkLog:
 
     def __init__(self):
         """Create the database and the table if they don't exist."""
-        self.initialize()
-
-    def initialize(self):
-        """Create the database and the table if they don't exist."""
-        from peewee import SqliteDatabase
-        db = SqliteDatabase('employees.db')
-        db.connect()
-        db.create_tables([Employee, Task], safe=True)
+        models.initialize()
 
     def add_task(self):
         """Add new entry"""
-        employee, _ = Employee.get_or_create(name=utils.get_name())
-        task = Task.create(
+        employee, _ = models.Employee.get_or_create(name=utils.get_name())
+        task = models.Task.create(
             employee=employee,
             title=utils.get_title(),
             time=utils.get_time(),
@@ -51,4 +44,4 @@ class WorkLog:
 
 
 if __name__ == '__main__':
-    MainMenu(WorkLog()).run()
+    MainMenu().run()
