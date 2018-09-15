@@ -29,10 +29,6 @@ class MenuOption:
         return "{}) {}".format(self.key, self.name)
 
 
-class QuitOption(MenuOption):
-    pass
-
-
 class Menu:
     """
     Base class to create menus with a set of options given. It shows the menu
@@ -86,7 +82,7 @@ class Menu:
         while True:
             self.print_menu()
             result = self.get_function(self.get_option())
-            if isinstance(result, QuitOption):
+            if isinstance(result, MenuOption):
                 break
             self.side_run(result)
 
@@ -121,7 +117,7 @@ class MainMenu(Menu):
             MenuOption('a', 'Add new entry', log, 'add_task'),
             MenuOption(
                 'b', 'Search in existing entries', SearchMenu(log), 'run'),
-            QuitOption('c', 'Quit program', self, 'quit'),
+            MenuOption('c', 'Quit program', self, 'quit'),
         ]
 
     def print_title(self):
@@ -148,7 +144,7 @@ class SearchMenu(Menu, TaskSearch):
             MenuOption('c', 'Range of Dates', self, 'search_by_range'),
             MenuOption('d', 'Time Spent', self, 'search_by_time'),
             MenuOption('e', 'Search Term', self, 'search_by_term'),
-            QuitOption('f', 'Return to menu', self, 'quit'),
+            MenuOption('f', 'Return to menu', self, 'quit'),
         ]
 
     def print_title(self):
@@ -188,7 +184,7 @@ class TaskMenu(Menu):
             MenuOption('n', '[N]ext', self, 'next_task'),
             MenuOption('e', '[E]dit', log, 'edit_task', index, self.tasks),
             MenuOption('d', '[D]elete', log, 'delete_task', index, self.tasks),
-            QuitOption('r', '[R]eturn', self, 'quit')
+            MenuOption('r', '[R]eturn', self, 'quit')
         ]
         self.options = self.get_options(index, len(self.tasks))
 

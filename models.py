@@ -54,3 +54,14 @@ class Task(BaseModel):
         self.time = utils.get_time(self.time)
         self.notes = utils.get_notes(self.notes)
         self.save()
+
+
+class MenuOptionModel(BaseModel):
+    key = CharField(max_length=5)
+    name = CharField(max_length=100)
+    obj = CharField(max_length=50)
+    func = CharField(max_length=50)
+
+
+class MenuOptionParam(BaseModel):
+    option = ForeignKeyField(MenuOptionModel, related_name='params')

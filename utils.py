@@ -60,7 +60,7 @@ def get_search_name():
     """Gets the name of the employee from user"""
     clear_screen()
     from models import Employee
-    name_list = [emp.name for emp in Employee.select()]
+    name_list = [emp.name for emp in Employee.select().order_by(Employee.name)]
     print("List of employees:")
     print("==================")
     for name in name_list:

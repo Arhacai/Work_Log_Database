@@ -15,7 +15,7 @@ class TaskSearch:
     def search_by_name(cls):
         """Search by Employee Name"""
         employee = Employee.get(Employee.name == utils.get_search_name())
-        entries = employee.tasks.order_by(Task.date)
+        entries = employee.tasks.join(Employee).order_by(Employee.name, Task.date)
         return [entry for entry in entries]
 
     @classmethod
@@ -26,7 +26,7 @@ class TaskSearch:
             Task.date.year == date.year,
             Task.date.month == date.month,
             Task.date.day == date.day
-        ).order_by(Task.date)
+        ).join(Employee).order_by(Employee.name, Task.date)
         return [entry for entry in entries]
 
     @classmethod
@@ -35,7 +35,7 @@ class TaskSearch:
         start_date, end_date = utils.get_date_range()
         entries = Task.select().where(
             Task.date.between(start_date, end_date)
-        ).order_by(Task.date)
+        ).join(Employee).order_by(Employee.name, Task.date)
         return [entry for entry in entries]
 
     @classmethod
@@ -43,7 +43,7 @@ class TaskSearch:
         """Search by Time Spent"""
         entries = Task.select().where(
             Task.time == utils.get_time()
-        ).order_by(Task.date)
+        ).join(Employee).order_by(Employee.name, Task.date)
         return [entry for entry in entries]
 
     @classmethod
@@ -52,5 +52,5 @@ class TaskSearch:
         term = utils.get_term()
         entries = Task.select().where(
             Task.title.contains(term) | Task.notes.contains(term)
-        ).order_by(Task.date)
+        ).join(Employee).order_by(Employee.name, Task.date)
         return [entry for entry in entries]
