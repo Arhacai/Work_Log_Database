@@ -14,7 +14,8 @@ class WorkLog:
         """Create the database and the table if they don't exist."""
         models.initialize()
 
-    def add_task(self):
+    @classmethod
+    def add_task(cls):
         """Add new entry"""
         employee, _ = models.Employee.get_or_create(name=utils.get_name())
         task = models.Task.create(
@@ -26,11 +27,13 @@ class WorkLog:
         task.show()
         input("The entry has been added. Press enter to return to the menu")
 
+    @classmethod
     def edit_task(self, index, tasks):
         """Edit entry"""
         tasks[index].edit()
         return index
 
+    @classmethod
     def delete_task(self, index, tasks):
         """Delete a task for the user selected."""
         answer = input("Do you really want to delete this task? [y/N]: ")

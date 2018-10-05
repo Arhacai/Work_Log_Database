@@ -56,25 +56,6 @@ class Task(BaseModel):
         self.save()
 
 
-class MenuOptionModel(BaseModel):
-    key = CharField(max_length=5)
-    name = CharField(max_length=100)
-    menu = CharField(max_length=50)
-    module = CharField(max_length=50)
-    obj = CharField(max_length=50)
-    func = CharField(max_length=50)
-
-    def get_obj(self):
-        return getattr(__import__(str(self.module)), str(self.obj))
-
-    def get_func(self, *args):
-        return getattr(self.get_obj()(*args), str(self.func))
-
-    def __str__(self):
-        """Returns a basic display of the option. Example: a) First Option"""
-        return "{}) {}".format(self.key, self.name)
-
-
 def initialize():
     """Create the database and the table if they don't exist."""
     try:
