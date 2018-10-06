@@ -64,4 +64,4 @@ def initialize():
         db.close()
     finally:
         db.connect()
-        db.create_tables([Employee, MenuOptionModel, Task], safe=True)
+        db.create_tables([Employee, Task], safe=True)

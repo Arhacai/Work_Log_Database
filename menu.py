@@ -1,6 +1,6 @@
 import utils
 from search import TaskSearch
-from models import Task, MenuOptionModel
+from models import Task
 
 
 class Menu:
